@@ -36,8 +36,7 @@ class PusherClientTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->credentials = new Credentials('3', '278d425bdf160c739803', '7ad3773142a6692b25b8');
-        $this->client      = new PusherClient($this->credentials);
+        $this->client = new PusherClient(3, '278d425bdf160c739803', '7ad3773142a6692b25b8');
     }
 
     /**
@@ -46,7 +45,7 @@ class PusherClientTest extends PHPUnit_Framework_TestCase
     public function testAssertApplicationIdIsAlwaysSent()
     {
         $config = $this->client->getConfig('command.params');
-        $this->assertEquals($config['app_id'], $this->credentials->getAppId());
+        $this->assertEquals($config['app_id'], $this->client->getCredentials()->getAppId());
     }
 
     /**

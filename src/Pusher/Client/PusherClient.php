@@ -53,20 +53,24 @@ class PusherClient extends Client
     protected $signature;
 
     /**
-     * Constructor
+     * Constructor. Please note that, in order to keep signature compatibility with Pusher libraries
+     * in other languages, we inject the application id, key and secret instead of creating a Credentials
+     * object. This is a less beautiful from architectural point of view but easier to use
      *
-     * @param Credentials $credentials
+     * @param int    $appId
+     * @param string $key
+     * @param string $secret
      */
-    public function __construct(Credentials $credentials)
+    public function __construct($appId, $key, $secret)
     {
         // Make sure we always have the app_id parameter as default
         parent::__construct('', array(
             'command.params' => array(
-                'app_id' => $credentials->getAppId()
+                'app_id' => (int)$appId
             )
         ));
 
-        $this->credentials = $credentials;
+        $this->credentials = new Credentials($appId, $key, $secret);
 
         $this->setDescription(ServiceDescription::factory(sprintf(
             __DIR__ . '/ServiceDescription/Pusher-%s.php',
@@ -78,7 +82,7 @@ class PusherClient extends Client
 
         // Add a listener to sign each requests
         $this->signature = new PusherSignature();
-        $this->addSubscriber(new SignatureListener($credentials, $this->signature));
+        $this->addSubscriber(new SignatureListener($this->credentials, $this->signature));
     }
 
     /**

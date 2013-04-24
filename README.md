@@ -33,16 +33,25 @@ layer around the client that aims to simplify usage and error handling.
 This is how you create a Pusher service:
 
 ```php
-use Pusher\Client\Credentials;
 use Pusher\Client\PusherClient;
 use Pusher\Service\PusherService;
 
-$credentials = new Credentials('application-id', 'key', 'secret');
-$client      = new PusherClient($credentials);
-$service     = new PusherService($client);
+$client  = new PusherClient('application-id', 'key', 'secret');
+$service = new PusherService($client);
 ```
 
 Once you have access to the service, you can perform any operations.
+
+### Access credentials
+
+Once you have the client, you can retrieve the stored credentials:
+
+```php
+$credentials = $client->getCredentials();
+echo $credentials->getAppId();
+echo $credentials->getKey();
+echo $credentials->getSecret();
+```
 
 ### Triggering events
 
@@ -231,12 +240,10 @@ class PusherLogger implements EventSubscriberInterface
 Next, we need to attach the subscriber to the client:
 
 ```php
-use Pusher\Client\Credentials;
 use Pusher\Client\PusherClient;
 use Pusher\Service\PusherService;
 
-$credentials = new Credentials('application-id', 'key', 'secret');
-$client      = new PusherClient($credentials);
+$client = new PusherClient('application-id', 'key', 'secret');
 
 $client->addSubscriber(new PusherLogger());
 
@@ -251,11 +258,9 @@ While the Pusher service is convenient, you may want to directly use the Pusher 
 better control of how requests are sent. You can do this:
 
 ```php
-use Pusher\Client\Credentials;
 use Pusher\Client\PusherClient;
 
-$credentials = new Credentials('application-id', 'key', 'secret');
-$client      = new PusherClient($credentials);
+$client = new PusherClient('application-id', 'key', 'secret');
 
 // Let's do a trigger
 $parameters = array(
